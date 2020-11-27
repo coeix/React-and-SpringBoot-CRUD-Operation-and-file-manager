@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dosis&display=swap');
+@import url('https://use.fontawesome.com/630fc761b2.css');
+
+
+
+body {
+	font-family: 'Dosis', sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	background-color: black;
+	background: url(../img/background.jpg);
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-size: cover;
+}
+code {
+  	font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+div.page{
+	border-radius: 20px;
+	padding: 4%;
+	margin: 2%;
+	background-color: white;
+}
+button{
+	margin: 1% !important;
+	border-radius: 6px !important;
+}
+.myform{
+	border-style: solid;
+  	border-width: 0px 0px 1px 0px;
+  	padding: 6px;
+  	box-sizing: border-box;
+  	width: 100%;
+  	border-radius: 6px;
+}
+.myform:hover{
+	border-width: 1px;
+}
+label{
+	padding: 0px 0px 0px 6px !important;
+}
+
+h1, h2, h3, h4, h5{
+	font-family: 'Cinzel Decorative', cursive !important;
+}
+th {
+	background-color: ghostwhite;
+	}
+.floatRight{
+	float: right;
+	text-align: right;
+	}
+.center{
+	text-align: center;
+	}
+.subtitle{
+	font-size: 12px;
+}
+.inutilizzati{
+	text-shadow: 2px 2px 5px grey;
+}
