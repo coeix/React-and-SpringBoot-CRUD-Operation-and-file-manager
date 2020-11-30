@@ -135,11 +135,62 @@ export class AddNewEvent extends Component {
         */
     }
 
+    // ----------------------- onSubmit formik button ------------------------------------------
+    onSubmit(values) {
+        // dentro al formik non posso usare state ma posso usare status
+        // https://github.com/formium/formik/issues/312
+
+        let sharedEvent = {
+            title: values.title,
+            date: values.date,
+            description: values.description,
+            userRef: (JSON.parse(localStorage.getItem('userSession')))['id'],
+            userTagged: values.userTagged,
+            imgPath: (JSON.parse(localStorage.getItem('userSession')))['id'] + "_" + values.date + "_" + values.title,
+            visibility: values.visibility,
+            weHaveImg: values.weHaveImg
+        }
+        // if there is an img to upload
+        if (sharedEvent.weHaveImg === '1'){
+            // replace white space in imgPath
+            var correctFilename = sharedEvent.imgPath ;
+            correctFilename = correctFilename.replace(/ /g,"-"); 
+            sharedEvent.imgPath = correctFilename
+
+            // memorizzare il nome dentro lo status invece che nel localstorage
+            localStorage.setItem('ImgFilename', correctFilename);
+            //alert("onSubmit image name: "+ localStorage.getItem('ImgFilename'))
+            const timer = setTimeout(() => {
+                $('#goUpload').click()
+            }, 3000);
+        }
+        else {
+            sharedEvent.imgPath = "nofile"
+            alert("no image uploaded")
+        }
+        //alert ("sharedEvent = " + JSON.stringify(sharedEvent))
+        
+        // create event
+        //EventsDataService.createEvent(sharedEvent)
+        
+        //alert ("sono alla fine dell'onSubmit")
+        //FilesDataService.uploadFile((localStorage.getItem('userImgData')),(JSON.stringify(sharedEvent.imgPath)))
+    
+        //alert("dopo")
+        //https://mkyong.com/spring-boot/spring-boot-file-upload-example/
+    }
+
     // ----------------------- upload -----------------
     upload() {
         let currentFile = this.state.selectedFiles[0];
-        let filename = localStorage.getItem('imgFilename')
-        alert("upload imgFilename: "+ localStorage.getItem('imgFilename'))
+        let filename = null
+        if (localStorage.getItem('imgFilename') != null){
+            filename = localStorage.getItem('imgFilename')
+        }
+        else{
+            filename = "Something bad appened"
+        }
+        alert("upload imgFilename: "+ filename)
         this.setState({
             progress: 0,
             currentFile: currentFile,
@@ -165,51 +216,6 @@ export class AddNewEvent extends Component {
 
         this.setState({ selectedFiles: undefined });
 
-    }
-
-    // ----------------------- onSubmit formik button ------------------------------------------
-    onSubmit(values) {
-        // dentro al formik non posso usare state ma posso usare status
-        // https://github.com/formium/formik/issues/312
-
-        let sharedEvent = {
-            title: values.title,
-            date: values.date,
-            description: values.description,
-            userRef: (JSON.parse(localStorage.getItem('userSession')))['id'],
-            userTagged: values.userTagged,
-            imgPath: (JSON.parse(localStorage.getItem('userSession')))['id'] + "_" + values.date + "_" + values.title,
-            visibility: values.visibility,
-            weHaveImg: values.weHaveImg
-        }
-        // if there is an img to upload
-        if (sharedEvent.weHaveImg === '1'){
-            // replace white space in imgPath
-            var correctFilename = sharedEvent.imgPath ;
-            correctFilename = correctFilename.replace(/ /g,"-"); 
-            sharedEvent.imgPath = correctFilename
-
-            // memorizzare il nome dentro lo status invece che nel localstorage
-            localStorage.setItem('ImgFilename', correctFilename);
-            alert("onSubmit image name: "+ localStorage.getItem('ImgFilename'))
-            const timer = setTimeout(() => {
-                $('#goUpload').click()
-            }, 3000);
-        }
-        else {
-            sharedEvent.imgPath = "nofile"
-            alert("no image uploaded")
-        }
-        //alert ("sharedEvent = " + JSON.stringify(sharedEvent))
-        
-        // create event
-        //EventsDataService.createEvent(sharedEvent)
-        
-        //alert ("sono alla fine dell'onSubmit")
-        //FilesDataService.uploadFile((localStorage.getItem('userImgData')),(JSON.stringify(sharedEvent.imgPath)))
-    
-        //alert("dopo")
-        //https://mkyong.com/spring-boot/spring-boot-file-upload-example/
     }
 
     // ----------------------- onChange allow the typing in the formik input -----------------
