@@ -42,6 +42,11 @@ public class Event {
 	// 1 = public
 	// 2 = private
 	
+	@Column(nullable = false, name = "weHaveImg")
+	private int weHaveImg;
+	// 0 = no
+	// 1 = yes
+	
 	public int getId() {
 		return id;
 	}
@@ -107,9 +112,18 @@ public class Event {
 		this.visibility = visibility;
 	}
 	
+	public int getWeHaveImg() {
+		return weHaveImg;
+	}
+
+	public void setWeHaveImg(int weHaveImg) {
+		this.weHaveImg = weHaveImg;
+	}
+	
 	@Override
 	public String toString() {
-		return "Event [id= " + id + " - title= " + title + " - date= " + date + " - userRef= " + userRef 
-				+ " - userTagged= " + userTagged + " - imgPath= " +imgPath + " - visibility= " + visibility + "]";
+		return "Event [id= " + id + " - title= " + title + " - date= " + date + " /n - userRef= " + userRef 
+				+ " - userTagged= " + userTagged + " /n - imgPath= " +imgPath + " /n - visibility= " + visibility 
+				+ " - weHaveImg= " + weHaveImg + "]";
 	}
 }

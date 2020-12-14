@@ -39,7 +39,6 @@ public class FilesStorageServiceImpl implements FilesStorageService {
 				throw new RuntimeException("Could not initialize folder for upload!");
 			}
 		}
-
 	}
 
 	@Override

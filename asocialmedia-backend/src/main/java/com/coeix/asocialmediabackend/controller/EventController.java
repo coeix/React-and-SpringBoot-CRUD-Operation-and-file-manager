@@ -32,11 +32,10 @@ public class EventController {
 	
 	// -------------------------------------------- /addNewEvent ---------------------------------------------
 
-	@PostMapping(value = "/defAddEvent")
-	public @ResponseBody Event createNewEvent(@RequestBody Event event) {
-		System.out.println("create new user: " + event);
-		Event eventCheck = eventRepository.save(event);
-		return eventCheck;
+	@PostMapping(value = "/addEvent")
+	public void createNewEvent(@RequestBody Event event) {
+		System.out.println("create new event: " + event);
+		eventRepository.save(event);
 		
 	}
 	
