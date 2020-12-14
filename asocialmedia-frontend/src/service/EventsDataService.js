@@ -8,14 +8,12 @@ const ADMIN_API_URL = `${CONTROLLER_API_URL}/event`
 class EventsDataService {
 
     createEvent(event) {
-        //localStorage.setItem('imgFilename',JSON.stringify(event.imgPath))
         //(<AddNewEvent func ={this.upload()} />)
-        return alert("questo è il return di createEvent " + JSON.stringify(event.imgPath))
-        //return axios.post(`${ADMIN_API_URL}/defAddEvent`, event);
+        //alert("create new event: " + JSON.stringify(event))
+        //return axios.post(`${ADMIN_API_URL}/addEvent`, event);
+        return alert("create new event: " + JSON.stringify(event))
     }
-
 }
-
 
 export default new EventsDataService()
 

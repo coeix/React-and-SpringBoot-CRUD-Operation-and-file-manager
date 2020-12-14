@@ -4,15 +4,15 @@ const CONTROLLER_API_URL = 'http://localhost:8080'
 const USER_API_URL = `${CONTROLLER_API_URL}/fileUser`
 
 class UploadFilesService {
-    upload(file, filenames, onUploadProgress) {
-        alert("ambarabà "+ filenames)
-        let filename = localStorage.getItem('imgFilename')
-        alert("localostorage dentro upload "+ filename)
+    upload(file, filename, onUploadProgress) {
+        if (filename == null){
+            filename = "Something-bad-appened"
+        }
+        //alert("UploadFilesService filename: "+ filename)
         let formData = new FormData();
         var extension= file.name.split('.').pop();
         filename = filename.replace(/"/g,""); 
         filename = filename+"."+extension
-        alert("vediamo che esce: " +filename)
         formData.append("file", file);
         formData.append("filename", filename)
         //localStorage.removeItem("imgFilename")

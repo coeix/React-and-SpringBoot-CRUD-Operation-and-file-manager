@@ -18,9 +18,9 @@ export class AddNewEvent extends Component {
         this.logout = this.logout.bind(this);
 
         this.state = {
-            selectedFiles: undefined,
-            selectedFile: undefined,
-            currentFile: undefined,
+            selectedFiles: null,
+            selectedFile: null,
+            currentFile: null,
             progress: 0,
             message: "",
             fileInfos: [],
@@ -115,15 +115,16 @@ export class AddNewEvent extends Component {
             // this is for the img to save
             selectedFiles: event.target.files,
             // this is only for the preview of the img
-            imgPreview: URL.createObjectURL(event.target.files[0])
+            imgPreview: URL.createObjectURL(event.target.files[0]),
+            // this is to know if we have an image to upload
+            weHaveImg: "1"
         });
         //$('#weHaveImg').attr('value', '1')
         //alert (" stampo il value di weHaveImg " + $('#weHaveImg').val())
-        
-        this.setState({ weHaveImg: "1" })
         /*
         const timer = setTimeout(() => {
-            alert("vediamo lo state: " + this.state.weHaveImg)
+            alert("we have an image to upload: 1=yes 0=no =>" + this.state.weHaveImg)
+            alert ("in selectFile we have: " + this.state.selectedFiles)
         }, 2000);
         */
 
@@ -139,7 +140,7 @@ export class AddNewEvent extends Component {
     onSubmit(values) {
         // dentro al formik non posso usare state ma posso usare status
         // https://github.com/formium/formik/issues/312
-
+        let i =1;
         let sharedEvent = {
             title: values.title,
             date: values.date,
@@ -149,72 +150,68 @@ export class AddNewEvent extends Component {
             imgPath: (JSON.parse(localStorage.getItem('userSession')))['id'] + "_" + values.date + "_" + values.title,
             visibility: values.visibility,
             weHaveImg: values.weHaveImg
-        }
+        };
         // if there is an img to upload
         if (sharedEvent.weHaveImg === '1'){
             // replace white space in imgPath
-            var correctFilename = sharedEvent.imgPath ;
+            var correctFilename = sharedEvent.imgPath;
             correctFilename = correctFilename.replace(/ /g,"-"); 
-            sharedEvent.imgPath = correctFilename
-
-            // memorizzare il nome dentro lo status invece che nel localstorage
+            sharedEvent.imgPath = correctFilename;
+        
             localStorage.setItem('ImgFilename', correctFilename);
             //alert("onSubmit image name: "+ localStorage.getItem('ImgFilename'))
-            const timer = setTimeout(() => {
-                $('#goUpload').click()
-            }, 3000);
+
+            $('#goUpload').click();
         }
         else {
-            sharedEvent.imgPath = "nofile"
-            alert("no image uploaded")
+            sharedEvent.imgPath = "nofile";
+            alert("no image uploaded");
         }
         //alert ("sharedEvent = " + JSON.stringify(sharedEvent))
         
         // create event
-        //EventsDataService.createEvent(sharedEvent)
+        EventsDataService.createEvent(sharedEvent)
+        .then((response) => {
+            return (this.props.history.push(`/events`))
+        })
+
         
-        //alert ("sono alla fine dell'onSubmit")
-        //FilesDataService.uploadFile((localStorage.getItem('userImgData')),(JSON.stringify(sharedEvent.imgPath)))
-    
-        //alert("dopo")
+  
         //https://mkyong.com/spring-boot/spring-boot-file-upload-example/
     }
 
     // ----------------------- upload -----------------
     upload() {
-        let currentFile = this.state.selectedFiles[0];
-        let filename = null
-        if (localStorage.getItem('imgFilename') != null){
-            filename = localStorage.getItem('imgFilename')
-        }
-        else{
-            filename = "Something bad appened"
-        }
-        alert("upload imgFilename: "+ filename)
-        this.setState({
-            progress: 0,
-            currentFile: currentFile,
-        });
-        // save file in storage folder
-        UploadFilesService.upload(currentFile,filename, (event) => {
-            this.setState({ progress: Math.round((100 * event.loaded) / event.total) });
-        })
-            .then((response) => {
-                this.setState({ message: response.data.message });
-                return UploadFilesService.getFiles();
-            })
-            .then((files) => {
-                this.setState({ fileInfos: files.data });
-            })
-            .catch(() => {
-                this.setState({
-                    progress: 0,
-                    message: "Could not upload the file!",
-                    currentFile: undefined,
-                });
+        let currentFileMom = null;
+        if (this.state.selectedFiles[0] != null){
+            currentFileMom = this.state.selectedFiles[0];
+            //alert("in upload we have this.state.selectedFiles[0]: " + this.state.selectedFiles[0] +" and localStorage.getItem('imgFilename'): "+localStorage.getItem('ImgFilename'))
+            this.setState({
+                progress: 0,
+                currentFile: currentFileMom,
             });
+            // save file in storage folder
+            UploadFilesService.upload(currentFileMom,localStorage.getItem('ImgFilename'), (event) => {
+                this.setState({ progress: Math.round((100 * event.loaded) / event.total) });
+            })
+                .then((response) => {
+                    this.setState({ message: response.data.message });
+                    return UploadFilesService.getFiles();
+                })
+                .then((files) => {
+                    this.setState({ fileInfos: files.data });
+                })
+                .catch(() => {
+                    this.setState({
+                        progress: 0,
+                        message: "Could not upload the file!",
+                        currentFile: null,
+                    });
+                });
 
-        this.setState({ selectedFiles: undefined });
+            this.setState({ selectedFiles: undefined });
+            localStorage.setItem('ImgFilename', null);
+        }
 
     }
 
@@ -278,7 +275,7 @@ export class AddNewEvent extends Component {
 
     // ----------------------- where the show begin -------------------------------------------
     render() {
-        const { selectedFiles, selectedFile, currentFile, progress, message, fileInfos } = this.state;
+        const { selectedFiles, currentFile, progress, message, fileInfos } = this.state;
         let { title, date, description, userTagged, visibility, weHaveImg, img, imgData } = this.state
 
         return (
@@ -372,7 +369,7 @@ export class AddNewEvent extends Component {
                                                                         <>
                                                                             <AliceCarousel autoPlay autoPlayInterval="3000">
                                                                                 {(() => {
-                                                                                    if (this.state.selectedFiles != null) {
+                                                                                    if (selectedFiles != null) {
                                                                                         return (<img src={this.state.imgPreview} className="sliderimg" />)
                                                                                     }
                                                                                     else
